@@ -1,0 +1,45 @@
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+
+import connectDB from './config/mongodb.js';
+import connectCloudinary from './config/cloudinary.js';
+import userRouter from './routes/userRoute.js';
+import productRouter from './routes/productRoute.js';
+import cartRouter from './routes/cartRoute.js';
+import orderRouter from './routes/orderRoute.js';
+import sellerRouter from './routes/sellerRoute.js';
+import heroRouter from './routes/heroRoute.js';
+import jobRouter from './routes/jobRoute.js';
+import reviewRouter from './routes/reviewRoute.js';
+import promoRouter from './routes/promoRoute.js';
+import profileRouter from './routes/profileRoute.js';
+
+// App Config
+const app = express();
+const port = process.env.PORT || 4000;
+connectDB();
+connectCloudinary();
+
+// middlewares
+app.use(express.json());
+app.use(cors());
+app.use('/uploads', express.static('uploads'));
+
+// api endpoints
+app.use('/api/user', userRouter);
+app.use('/api/product', productRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/order', orderRouter);
+app.use('/api/seller', sellerRouter);
+app.use('/api/hero', heroRouter);
+app.use('/api/job', jobRouter);
+app.use('/api/review', reviewRouter);
+app.use('/api/promo', promoRouter);
+app.use('/api/profile', profileRouter);
+
+app.get('/', (req, res) => {
+  res.send('API Working');
+});
+
+app.listen(port, () => console.log(`Server started on PORT : ${port}`));
