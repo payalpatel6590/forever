@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(),
             tailwindcss(),
   ],
-  base: process.env.NODE_ENV === 'production' ? '/ecommerce-app/' : '/',
+  base: '/',
   server: {
     port: 5173,
     proxy: {
