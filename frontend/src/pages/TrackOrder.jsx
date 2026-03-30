@@ -11,18 +11,15 @@ const TrackOrder = () => {
 
   const fetchOrder = async () => {
     try {
-      const res = await axios.get(
-        `${backendUrl}/api/order/user-orders`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const res = await axios.get(`${backendUrl}/api/order/user-orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (res.data.success) {
-        const foundOrder = res.data.orders?.find(o => o._id === orderId);
-        if (foundOrder) {
-          setOrder(foundOrder);
-        }
+        const foundOrder = res.data.orders?.find(
+          (o) => o._id === orderId
+        );
+        if (foundOrder) setOrder(foundOrder);
       }
     } catch (error) {
       console.log(error);
@@ -31,15 +28,11 @@ const TrackOrder = () => {
 
   useEffect(() => {
     fetchOrder();
-
-    const interval = setInterval(() => {
-      fetchOrder();
-    }, 3000);
-
+    const interval = setInterval(fetchOrder, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  if (!order) return <p className="p-6">Loading...</p>;
+  if (!order) return <p className="p-4 sm:p-6">Loading...</p>;
 
   const steps = [
     { label: "Order Placed", icon: "📦" },
@@ -50,49 +43,61 @@ const TrackOrder = () => {
   ];
 
   const currentStepIndex = steps.findIndex(
-    (step) => step.label.toLowerCase() === (order.status || "").toLowerCase(),
+    (step) =>
+      step.label.toLowerCase() === (order.status || "").toLowerCase()
   );
 
   return (
-    <div className="p-2 min-h-[60vh] max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold mb-8 text-center">Track Your Order</h2>
+    <div className="p-3 sm:p-6 min-h-[60vh] max-w-6xl mx-auto">
+      <h2 className="text-xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">
+        Track Your Order
+      </h2>
 
       {order.items.map((item, index) => (
         <div
           key={index}
-          className="flex flex-col sm:flex-row gap-8 border p-6 rounded-lg shadow mb-6"
+          className="flex flex-col gap-6 border p-4 sm:p-6 rounded-lg shadow mb-6"
         >
           {/* PRODUCT */}
-          <div className="flex items-center gap-2 w-full sm:w-1/2">
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-28 h-28 object-cover rounded-lg"
-            />
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+            <div className="flex items-center gap-3 w-full sm:w-1/2">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-20 h-20 sm:w-28 sm:h-28 object-cover rounded-lg"
+              />
 
-            <div>
-              <p className="text-xl font-semibold">{item.name}</p>
-              <p className="text-gray-600">Price: ${item.price}</p>
-              <p className="text-gray-600">Quantity: {item.quantity}</p>
+              <div>
+                <p className="text-base sm:text-xl font-semibold">
+                  {item.name}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Price: ${item.price}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Quantity: {item.quantity}
+                </p>
+              </div>
+            </div>
+
+            {/* DETAILS */}
+            <div className="w-full sm:w-1/2">
+              <p className="text-sm sm:text-base mb-2">
+                <b>Order ID:</b> {order._id}
+              </p>
+
+              <p className="text-sm sm:text-base mb-4">
+                <b>Status:</b>
+                <span className="text-green-600 font-semibold ml-2">
+                  {order.status || "Pending"}
+                </span>
+              </p>
             </div>
           </div>
 
-          {/* DETAILS */}
-          <div className="w-full sm:w-1/2">
-            <p className="mb-2">
-              <b>Order ID:</b> {order._id}
-            </p>
-
-            <p className="mb-6">
-              <b>Status:</b>
-              <span className="text-green-600 font-semibold ml-2">
-                {order.status || "Pending"}
-              </span>
-            </p>
-
-            {/* TRACKER */}
-
-            <div className="flex items-center mt-6">
+          {/* TRACKER */}
+          <div className="overflow-x-auto">
+            <div className="flex items-center min-w-[500px]">
               {steps.map((step, idx) => {
                 const isCompleted = idx < currentStepIndex;
                 const isCurrent = idx === currentStepIndex;
@@ -101,26 +106,26 @@ const TrackOrder = () => {
                   <div key={idx} className="flex items-center">
                     <div className="flex flex-col items-center">
                       <div
-                        className={`w-12 h-12 flex items-center justify-center rounded-full text-2xl
+                        className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full text-lg sm:text-2xl
                         ${
                           isCompleted
                             ? "bg-green-500 text-white"
                             : isCurrent
-                              ? "bg-yellow-400 text-white"
-                              : "bg-gray-300 text-gray-600"
+                            ? "bg-yellow-400 text-white"
+                            : "bg-gray-300 text-gray-600"
                         }`}
                       >
                         {step.icon}
                       </div>
 
                       <span
-                        className={`text-xs mt-2 text-center
+                        className={`text-[10px] sm:text-xs mt-2 text-center
                         ${
                           isCompleted
                             ? "font-semibold text-black"
                             : isCurrent
-                              ? "font-semibold text-yellow-600"
-                              : "text-gray-400"
+                            ? "font-semibold text-yellow-600"
+                            : "text-gray-400"
                         }`}
                       >
                         {step.label}
@@ -129,7 +134,7 @@ const TrackOrder = () => {
 
                     {idx !== steps.length - 1 && (
                       <div
-                        className={`w-16 h-1 mx-1 rounded-full
+                        className={`w-10 sm:w-16 h-1 mx-1 rounded-full
                         ${
                           idx < currentStepIndex
                             ? "bg-green-500"

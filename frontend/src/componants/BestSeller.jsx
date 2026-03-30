@@ -6,13 +6,10 @@ import ProductItem from "./ProductItem";
 const BestSeller = () => {
   const { products } = useContext(ShopContext);
 
-  // Get bestseller products
   const rawBestSeller = products.filter((item) => item.bestseller === true);
 
-  // Make sure at least 5 items exist for proper slider UI
   const bestSeller = useMemo(() => {
     if (rawBestSeller.length === 0) return [];
-
     if (rawBestSeller.length >= 5) return rawBestSeller;
 
     const filled = [...rawBestSeller];
@@ -26,7 +23,6 @@ const BestSeller = () => {
     return filled;
   }, [rawBestSeller]);
 
-  // Clone first 5 items at end for infinite smooth loop
   const sliderItems = useMemo(() => {
     if (bestSeller.length === 0) return [];
     return [...bestSeller, ...bestSeller.slice(0, 5)];
@@ -44,7 +40,6 @@ const BestSeller = () => {
   const prevSlide = () => {
     if (bestSeller.length === 0) return;
 
-    // for smooth previous movement from start
     if (currentIndex === 0) {
       setIsTransitionEnabled(false);
       setCurrentIndex(bestSeller.length);
@@ -54,23 +49,17 @@ const BestSeller = () => {
         setCurrentIndex(bestSeller.length - 1);
       }, 20);
     } else {
-      setIsTransitionEnabled(true);
       setCurrentIndex((prev) => prev - 1);
     }
   };
 
-  // Auto slide every 15 sec
   useEffect(() => {
     if (bestSeller.length === 0) return;
 
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
-
+    const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, [bestSeller.length]);
 
-  // Reset instantly when last cloned slide reached
   const handleTransitionEnd = () => {
     if (currentIndex === bestSeller.length) {
       setIsTransitionEnabled(false);
@@ -78,13 +67,11 @@ const BestSeller = () => {
     }
   };
 
-  // Re-enable transition after reset
   useEffect(() => {
     if (!isTransitionEnabled) {
       const id = setTimeout(() => {
         setIsTransitionEnabled(true);
       }, 30);
-
       return () => clearTimeout(id);
     }
   }, [isTransitionEnabled]);
@@ -92,10 +79,10 @@ const BestSeller = () => {
   if (bestSeller.length === 0) return null;
 
   return (
-    <div className="my-10 px-4">
-      <div className="text-center text-3xl py-8">
+    <div className="my-10 px-2 sm:px-4">
+      <div className="text-center text-2xl sm:text-3xl py-6 sm:py-8">
         <Title text1={"BEST"} text2={"SELLERS"} />
-        <p className="w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600">
+        <p className="w-full sm:w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600">
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </p>
       </div>
@@ -104,17 +91,16 @@ const BestSeller = () => {
         {/* Left Button */}
         <button
           onClick={prevSlide}
-          className="absolute left-0 z-10 bg-white/80 hover:bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold"
+          className="absolute left-1 sm:left-0 z-10 bg-white/80 hover:bg-white shadow-md rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl"
         >
           &lt;
         </button>
 
-        {/* Slider Wrapper */}
-        <div className="overflow-hidden w-full mx-12">
+        <div className="overflow-hidden w-full mx-6 sm:mx-12">
           <div
             className="flex"
             style={{
-              transform: `translateX(-${currentIndex * 20}%)`,
+              transform: `translateX(-${currentIndex * 100}%)`,
               transition: isTransitionEnabled
                 ? "transform 0.7s ease-in-out"
                 : "none",
@@ -124,7 +110,7 @@ const BestSeller = () => {
             {sliderItems.map((item, index) => (
               <div
                 key={`${item._id}-${index}`}
-                className="w-[20%] flex-shrink-0 px-2"
+                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 flex-shrink-0 px-2"
               >
                 <ProductItem
                   id={item._id}
@@ -140,7 +126,7 @@ const BestSeller = () => {
         {/* Right Button */}
         <button
           onClick={nextSlide}
-          className="absolute right-0 z-10 bg-white/80 hover:bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold"
+          className="absolute right-1 sm:right-0 z-10 bg-white/80 hover:bg-white shadow-md rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl"
         >
           &gt;
         </button>
